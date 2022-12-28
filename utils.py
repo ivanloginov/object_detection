@@ -1,18 +1,3 @@
-# Copyright 2021 The TensorFlow Authors. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-"""Utility functions to display the pose detection results."""
-
 import cv2
 import numpy as np
 from tflite_support.task import processor
@@ -22,6 +7,20 @@ _ROW_SIZE = 10  # pixels
 _FONT_SIZE = 1
 _FONT_THICKNESS = 1
 _TEXT_COLOR = (0, 0, 255)  # red
+
+def print_coord_class_prob(detection_result):
+  for detection in detection_result.detections:
+    bbox = detection.bounding_box
+    start_point = bbox.origin_x, bbox.origin_y
+    end_point = bbox.origin_x + bbox.width, bbox.origin_y + bbox.height
+    central_point = [bbox.width/2, bbox.height/2]
+
+    category = detection.categories[0]
+    cat_name = category.category_name
+    prob = round(category.score, 2)
+
+    print('center:{} | class:{} | prob:{}'.format(central_point, cat_name, prob))
+
 
 
 def visualize(
