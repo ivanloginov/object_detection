@@ -1,4 +1,4 @@
-## Object Detection with Raspberry Pi 4
+## Continuous object detection with Raspberry Pi 4 and 8MP camera
 
 Making use of TensorFlow Lite library to detect objects with Raspberry 8MP camera.
 
