@@ -6,3 +6,6 @@ Making use of TensorFlow Lite library to detect objects with Raspberry 8MP camer
 1. Detect objects with custom dataset
 2. Output object coordinates only on image change
 3. Speed up detection with Google Coral
+
+#### TODO:
+1. LabelIMG for custom dataset
