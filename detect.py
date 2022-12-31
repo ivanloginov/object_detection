@@ -84,8 +84,8 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     #            font_size, text_color, font_thickness)
 
     # Stop the program if the ESC key is pressed.
-    if cv2.waitKey(1) == 27:
-      break
+    # if cv2.waitKey(1) == 27:
+    #   break
     #cv2.imshow('object_detector', image)
     utils.print_coord_class_prob(detection_result)
 
