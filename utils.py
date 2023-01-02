@@ -8,7 +8,7 @@ _FONT_SIZE = 1
 _FONT_THICKNESS = 1
 _TEXT_COLOR = (0, 0, 255)  # red
 
-def print_coord_class_prob(detection_result):
+def print_coord_class_prob(detection_result, fps):
   for detection in detection_result.detections:
     bbox = detection.bounding_box
     start_point = bbox.origin_x, bbox.origin_y
@@ -19,7 +19,7 @@ def print_coord_class_prob(detection_result):
     cat_name = category.category_name
     prob = round(category.score, 2)
 
-    print('center:{} | class:{} | prob:{}'.format(central_point, cat_name, prob))
+    print('center: {} | class: {} | prob: {} | fps: {:.1f}'.format(central_point, cat_name, prob, fps))
 
 
 
