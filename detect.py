@@ -94,7 +94,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
       # if cv2.waitKey(1) == 27:
       #   break
       #cv2.imshow('object_detector', image)
-      utils.print_coord_class_prob(detection_result, fps)
+      utils.print_data(detection_result, fps)
 
   cap.release()
   cv2.destroyAllWindows()
