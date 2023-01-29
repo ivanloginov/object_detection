@@ -69,7 +69,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     detection_result = detector.detect(input_tensor)
 
     # Draw keypoints and edges on input image
-    image = utils.visualize(image, detection_result)
+    # image = utils.visualize(image, detection_result)
 
     # Calculate the FPS
     if counter % fps_avg_frame_count == 0:
@@ -78,15 +78,16 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
       start_time = time.time()
 
     # Show the FPS
-    fps_text = 'FPS = {:.1f}'.format(fps)
-    text_location = (left_margin, row_size)
-    cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
-                font_size, text_color, font_thickness)
+    # fps_text = 'FPS = {:.1f}'.format(fps)
+    # text_location = (left_margin, row_size)
+    # cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
+    #            font_size, text_color, font_thickness)
 
     # Stop the program if the ESC key is pressed.
     if cv2.waitKey(1) == 27:
       break
     #cv2.imshow('object_detector', image)
+    utils.print_coord_class_prob(detection_result)
 
   cap.release()
   cv2.destroyAllWindows()
