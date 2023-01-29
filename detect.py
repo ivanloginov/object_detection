@@ -48,6 +48,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
       base_options=base_options, detection_options=detection_options)
   detector = vision.ObjectDetector.create_from_options(options)
 
+  img_list = []
   # Continuously capture images from the camera and run inference
   while cap.isOpened():
     success, image = cap.read()
@@ -65,29 +66,35 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     # Create a TensorImage object from the RGB image.
     input_tensor = vision.TensorImage.create_from_array(rgb_image)
 
-    # Run object detection estimation using the model.
-    detection_result = detector.detect(input_tensor)
+    img_list.append(rgb_image)
+    if (len(img_list)>1):
+      mse = get_mse(img_list[0], img_list[1])
+      img_list.pop(0)
+      
+    if mse!=0:
+      # Run object detection estimation using the model.
+      detection_result = detector.detect(input_tensor)
 
-    # Draw keypoints and edges on input image
-    # image = utils.visualize(image, detection_result)
+      # Draw keypoints and edges on input image
+      # image = utils.visualize(image, detection_result)
 
-    # Calculate the FPS
-    if counter % fps_avg_frame_count == 0:
-      end_time = time.time()
-      fps = fps_avg_frame_count / (end_time - start_time)
-      start_time = time.time()
+      # Calculate the FPS
+      if counter % fps_avg_frame_count == 0:
+        end_time = time.time()
+        fps = fps_avg_frame_count / (end_time - start_time)
+        start_time = time.time()
 
-    # Show the FPS
-    # fps_text = 'FPS = {:.1f}'.format(fps)
-    # text_location = (left_margin, row_size)
-    # cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
-    #            font_size, text_color, font_thickness)
+      # Show the FPS
+      # fps_text = 'FPS = {:.1f}'.format(fps)
+      # text_location = (left_margin, row_size)
+      # cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
+      #            font_size, text_color, font_thickness)
 
-    # Stop the program if the ESC key is pressed.
-    # if cv2.waitKey(1) == 27:
-    #   break
-    #cv2.imshow('object_detector', image)
-    utils.print_coord_class_prob(detection_result)
+      # Stop the program if the ESC key is pressed.
+      # if cv2.waitKey(1) == 27:
+      #   break
+      #cv2.imshow('object_detector', image)
+      utils.print_coord_class_prob(detection_result)
 
   cap.release()
   cv2.destroyAllWindows()
@@ -131,6 +138,14 @@ def main():
 
   run(args.model, int(args.cameraId), args.frameWidth, args.frameHeight,
       int(args.numThreads), bool(args.enableEdgeTPU))
+
+
+def get_mse(img1, img2):
+  h, w = img1.shape
+  diff = cv2.subtract(img1, img2)
+  err = np.sum(diff**2)
+  mse = err/(float(h*w))
+  return mse
 
 
 if __name__ == '__main__':
