@@ -8,7 +8,7 @@ _FONT_SIZE = 1
 _FONT_THICKNESS = 1
 _TEXT_COLOR = (0, 0, 255)  # red
 
-def print_coord_class_prob(detection_result, fps):
+def print_data(detection_result, fps):
   for detection in detection_result.detections:
     bbox = detection.bounding_box
     start_point = bbox.origin_x, bbox.origin_y
