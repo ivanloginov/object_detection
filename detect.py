@@ -43,7 +43,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
   base_options = core.BaseOptions(
       file_name=model, use_coral=enable_edgetpu, num_threads=num_threads)
   detection_options = processor.DetectionOptions(
-      max_results=3, score_threshold=0.3)
+      max_results=3, score_threshold=0.7)
   options = vision.ObjectDetectorOptions(
       base_options=base_options, detection_options=detection_options)
   detector = vision.ObjectDetector.create_from_options(options)
@@ -70,7 +70,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     if (len(img_list)>1):
       mse = get_mse(img_list[0], img_list[1])
       img_list.pop(0)
-      
+
     if mse!=0:
       # Run object detection estimation using the model.
       detection_result = detector.detect(input_tensor)
@@ -94,7 +94,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
       # if cv2.waitKey(1) == 27:
       #   break
       #cv2.imshow('object_detector', image)
-      utils.print_coord_class_prob(detection_result)
+      utils.print_coord_class_prob(detection_result, fps)
 
   cap.release()
   cv2.destroyAllWindows()
