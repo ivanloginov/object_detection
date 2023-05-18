@@ -8,6 +8,8 @@ from tflite_support.task import processor
 from tflite_support.task import vision
 import utils
 
+from picamera2 import Picamera2
+
 
 def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
         enable_edgetpu: bool) -> None:
@@ -27,9 +29,14 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
   start_time = time.time()
 
   # Start capturing video input from the camera
-  cap = cv2.VideoCapture(camera_id)
-  cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-  cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+  picam2 = Picamera2()
+  normalSize = (640, 480)
+  lowresSize = (320, 240)
+  config = picam2.create_preview_configuration(main={"size": normalSize},
+                                               lores={"size": lowresSize, "format": "YUV420"})
+  picam2.configure(config)
+  stride = picam2.stream_configuration("lores")["stride"]
+  picam2.start()
 
   # Visualization parameters
   row_size = 20  # pixels
@@ -50,18 +57,14 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
 
   img_list = []
   # Continuously capture images from the camera and run inference
-  while cap.isOpened():
-    success, image = cap.read()
-    if not success:
-      sys.exit(
-          'ERROR: Unable to read from webcam. Please verify your webcam settings.'
-      )
-
+  while True:
+    buffer = picam2.capture_buffer("lores")
+    image = buffer[:stride * lowresSize[1]].reshape((lowresSize[1], stride))
+ 
     counter += 1
-    image = cv2.flip(image, 1)
 
-    # Convert the image from BGR to RGB as required by the TFLite model.
-    rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    # Convert the image from gray to RGB as required by the TFLite model.
+    rgb_image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
 
     # Create a TensorImage object from the RGB image.
     input_tensor = vision.TensorImage.create_from_array(rgb_image)
@@ -96,8 +99,6 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
       #cv2.imshow('object_detector', image)
       utils.print_data(detection_result, fps)
 
-  cap.release()
-  cv2.destroyAllWindows()
 
 
 def main():
