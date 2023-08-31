@@ -1,4 +1,4 @@
-## Continuous object detection with Raspberry Pi 4 and a web camera
+### Continuous object detection with Raspberry Pi 4 and a web camera
 
 Making use of TensorFlow Lite library.
 
