@@ -7,3 +7,5 @@ Making use of TensorFlow Lite library.
 2. Output object coordinates only on image change
 3. Speed up detection with Google Coral
 
+## License
+This project is licensed under the MIT License.
